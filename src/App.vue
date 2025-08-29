@@ -1,15 +1,16 @@
-<script setup>
-import { ref } from 'vue'
-import ChildComp from './ChildComp.vue'
-
-const childMsg = ref('No child msg yet')
+<script setup lang="ts">
+import AppSidebar from '@/components/AppSidebar.vue'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 </script>
 
 <template>
-  <ChildComp @response="(msg) => childMsg = msg" />
-  <p>{{ childMsg }}</p>
+  <SidebarProvider>
+    <div class="flex h-screen">
+      <AppSidebar />
+      <main class="flex-1 overflow-auto p-4">
+        <SidebarTrigger />
+        <router-view />
+      </main>
+    </div>
+  </SidebarProvider>
 </template>
-
-<style scoped>
-
-</style>
