@@ -7,7 +7,7 @@ import { SidebarProvider } from '@/components/ui/sidebar'
   <SidebarProvider>
     <div class="flex h-screen">
       <AppSidebar />
-      <main class="flex-1 overflow-auto p-4">
+      <main class="flex-col">
         <router-view />
       </main>
     </div>
