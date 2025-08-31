@@ -1,22 +1,15 @@
 ﻿<script setup lang="ts">
 import { Form, Field, ErrorMessage } from 'vee-validate'
-import * as yup from 'yup'
+import {getFieldRefsByForm} from "@/forms/getFieldRefsByForm";
+import {buildSchema} from "@/forms/formHelper";
+import type {RegisterDto} from "@/dtos/RegisterDto";
 
-// Define validation schema
-const schema = yup.object({
-  username: yup.string().required('Username is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required(),
-  confirmPassword: yup
-      .string()
-      .oneOf([yup.ref('password')], 'Passwords must match')
-      .required('Please confirm your password')
-})
 
-// Handle form submission
-function onSubmit(values: Record<string, string>) {
+const fieldDefs = getFieldRefsByForm.register
+const schema = buildSchema(fieldDefs)
+
+async function onSubmit(values: RegisterDto) {
   console.log('Form submitted:', values)
-  alert('Registration successful!')
 }
 </script>
 
@@ -25,29 +18,18 @@ function onSubmit(values: Record<string, string>) {
     <h2 class="text-2xl font-bold text-center mb-6 underline">Register</h2>
 
     <Form :validation-schema="schema" @submit="onSubmit" class="flex flex-col gap-4">
-      <!-- Username -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <Field name="username" id="username" as="input" class="mt-1 block w-full border rounded px-3 py-2" placeholder="Enter username" />
-        <ErrorMessage name="username" class="text-sm text-red-500 mt-1" />
-      </div>
 
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <Field name="email" id="email" as="input" type="email" class="mt-1 block w-full border rounded px-3 py-2" placeholder="Enter email" />
-        <ErrorMessage name="email" class="text-sm text-red-500 mt-1" />
-      </div>
-
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <Field name="password" id="password" as="input" type="password" class="mt-1 block w-full border rounded px-3 py-2" placeholder="Enter password" />
-        <ErrorMessage name="password" class="text-sm text-red-500 mt-1" />
-      </div>
-
-      <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-        <Field name="confirmPassword" id="confirmPassword" as="input" type="password" class="mt-1 block w-full border rounded px-3 py-2" placeholder="Confirm password" />
-        <ErrorMessage name="confirmPassword" class="text-sm text-red-500 mt-1" />
+      <div v-for="f in fieldDefs" :key="f.name">
+        <label :for="f.name" class="block text-sm font-medium text-gray-700">{{ f.label }}</label>
+        <Field
+            :name="f.name"
+            :id="f.name"
+            as="input"
+            :type="f.type"
+            class="mt-1 block w-full border rounded px-3 py-2"
+            :placeholder="f.placeholder"
+        />
+        <ErrorMessage :name="f.name" class="text-sm text-red-500 mt-1" />
       </div>
 
       <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
