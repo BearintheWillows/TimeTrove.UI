@@ -5,11 +5,12 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 
 <template>
   <SidebarProvider>
-    <div class="flex h-screen">
+    <div class="flex h-screen w-screen">
       <AppSidebar />
-      <main class="flex-col">
+      <main class="flex flex-1 min-w-0 items-center justify-center overflow-y-auto">
         <router-view />
       </main>
     </div>
   </SidebarProvider>
 </template>
+
