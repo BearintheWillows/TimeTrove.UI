@@ -1,24 +1,29 @@
 ﻿<script setup lang="ts">
 import { Form, Field, ErrorMessage } from 'vee-validate'
-import {getFieldRefsByForm} from "@/forms/getFieldRefsByForm";
-import {buildSchema} from "@/forms/formHelper";
-import type {RegisterDto} from "@/dtos/RegisterDto";
-
+import { getFieldRefsByForm } from '@/forms/getFieldRefsByForm'
+import { buildSchema } from '@/forms/formHelper'
+import { api } from '@/api/api'
+import { RegisterRequest } from '@/api/apiClient'
+import type { IRegisterRequest } from '@/api/apiClient'
 
 const fieldDefs = getFieldRefsByForm.register
 const schema = buildSchema(fieldDefs)
 
-async function onSubmit(values: RegisterDto) {
-  console.log('Form submitted:', values)
+const registerUser = async (values: IRegisterRequest) => {
+  try {
+    const payload = new RegisterRequest(values)
+    await api.register(payload)
+  } catch (err) {
+    console.error('Registration failed:', err)
+  }
 }
 </script>
 
 <template>
-  <div class="max-w-md mx-auto mt-10 border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
+  <div class="w-full max-w-md border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
     <h2 class="text-2xl font-bold text-center mb-6 underline">Register</h2>
 
-    <Form :validation-schema="schema" @submit="onSubmit" class="flex flex-col gap-4">
-
+    <Form :validation-schema="schema" @submit="registerUser" class="flex flex-col gap-4">
       <div v-for="f in fieldDefs" :key="f.name">
         <label :for="f.name" class="block text-sm font-medium text-gray-700">{{ f.label }}</label>
         <Field

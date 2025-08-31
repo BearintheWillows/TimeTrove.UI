@@ -19,13 +19,6 @@ const emailFieldDef: BaseFieldDef = {
 
 export const registerFields: ReadonlyArray<BaseFieldDef>
     = [
-    {
-        name: 'username',
-        label: 'Username',
-        type: 'text',
-        placeholder: 'Enter username',
-        rules: yup.string().required('Username is required'),
-    },
     emailFieldDef,
     passwordFieldDef,
     {
